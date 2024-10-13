@@ -26,8 +26,13 @@ export class DashboardComponent implements OnInit {
   public router: Router;
 
   public totalEarnings: number;
+  public totalRegistrations: number;
+
   public totalEventEarnings: number;
+  public totalEventRegistrations: number;
+
   public totalWorkshopEarnings: number;
+  public totalWorkshopRegistrations: number;
 
   public showZeroRegEvents: boolean = false;
   public showEventsOnly: boolean = false;
@@ -41,9 +46,15 @@ export class DashboardComponent implements OnInit {
     this.eventStats = [];
     this.apiService = inject(ApiService);
     this.router = inject(Router);
+
     this.totalEarnings = 0;
+    this.totalRegistrations = 0;
+
     this.totalEventEarnings = 0;
+    this.totalEventRegistrations = 0;
+    
     this.totalWorkshopEarnings = 0;
+    this.totalWorkshopRegistrations = 0;
   }
 
   async ngOnInit() {
@@ -56,16 +67,29 @@ export class DashboardComponent implements OnInit {
       if (data) {
         this.eventStats = data.events;
 
+        this.eventStats.forEach((event) => {
+          event.freeSeats = parseInt(event.maxSeats) - parseInt(event.seatsFilled);
+        });
+
         this.totalEarnings = this.eventStats.reduce((acc, event) => {
           return acc + parseInt(event.totalRevenue ?? 0);
+        }, 0);
+        this.totalRegistrations = this.eventStats.reduce((acc, event) => {
+          return acc + parseInt(event.seatsFilled);
         }, 0);
     
         this.totalEventEarnings = this.eventStats.reduce((acc, event) => {
           return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
+        this.totalEventRegistrations = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '0' ? acc : acc + parseInt(event.seatsFilled);
+        }, 0);
     
         this.totalWorkshopEarnings = this.eventStats.reduce((acc, event) => {
           return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalRevenue ?? 0);
+        }, 0);
+        this.totalWorkshopRegistrations = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '1' ? acc : acc + parseInt(event.seatsFilled);
         }, 0);
 
         this.filterEvents();

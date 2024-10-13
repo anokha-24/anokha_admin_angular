@@ -6,15 +6,18 @@
     <div class="inner-card">
       <h6>Total Earnings</h6>
       <h1>₹ {{ totalEarnings }} \-</h1>
+      <p> {{ totalRegistrations }} registrations</p>
     </div>
     <div class="group">
       <div class="inner-card">
         <h6>Events</h6>
         <h1>₹ {{ totalEventEarnings }} \-</h1>
+        <p> {{ totalEventRegistrations }} registrations</p>
       </div>
       <div class="inner-card">
         <h6>Workshops</h6>
         <h1>₹ {{ totalWorkshopEarnings }} \-</h1>
+        <p> {{ totalWorkshopRegistrations }} registrations</p>
       </div>
     </div>
   </div>
@@ -74,6 +77,25 @@
         </th>
         <th>Event Name</th>
         <th>DepartmentName</th>
+        <th (click)="sortBy('freeSeats')">
+          Seats Free
+          <svg
+            class="sort-icon"
+            [ngClass]="{
+              'sort-up': sortedColumn === 'freeSeats' && sortOrder === 1,
+              'sort-down': sortedColumn === 'freeSeats' && sortOrder === -1
+            }"
+          >
+            <use
+              *ngIf="sortedColumn === 'freeSeats' && sortOrder === 1"
+              xlink:href="#sort-icon-up"
+            ></use>
+            <use
+              *ngIf="sortedColumn === 'freeSeats' && sortOrder === -1"
+              xlink:href="#sort-icon-down"
+            ></use>
+          </svg>
+        </th>
         <th (click)="sortBy('seatsFilled')">
           Seats Filled
           <svg
@@ -89,6 +111,25 @@
             ></use>
             <use
               *ngIf="sortedColumn === 'seatsFilled' && sortOrder === -1"
+              xlink:href="#sort-icon-down"
+            ></use>
+          </svg>
+        </th>
+        <th (click)="sortBy('maxSeats')">
+          Max Seats
+          <svg
+            class="sort-icon"
+            [ngClass]="{
+              'sort-up': sortedColumn === 'maxSeats' && sortOrder === 1,
+              'sort-down': sortedColumn === 'maxSeats' && sortOrder === -1
+            }"
+          >
+            <use
+              *ngIf="sortedColumn === 'maxSeats' && sortOrder === 1"
+              xlink:href="#sort-icon-up"
+            ></use>
+            <use
+              *ngIf="sortedColumn === 'maxSeats' && sortOrder === -1"
               xlink:href="#sort-icon-down"
             ></use>
           </svg>
@@ -130,7 +171,9 @@
           {{ event.eventDepartmentName }} (
           {{ event.eventDepartmentAbbreviation }} )
         </td>
+        <td>{{ event.freeSeats }}</td>
         <td>{{ event.seatsFilled }}</td>
+        <td>{{ event.maxSeats}}</td>
         <td>{{ event.totalRevenue ?? "0" }}</td>
       </tr>
     </tbody>
