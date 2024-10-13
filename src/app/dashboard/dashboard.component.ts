@@ -26,12 +26,15 @@ export class DashboardComponent implements OnInit {
   public router: Router;
 
   public totalEarnings: number;
+  public totalMembers: number;
   public totalRegistrations: number;
 
   public totalEventEarnings: number;
+  public totalEventMembers: number;
   public totalEventRegistrations: number;
 
   public totalWorkshopEarnings: number;
+  public totalWorkshopMembers: number;
   public totalWorkshopRegistrations: number;
 
   public showZeroRegEvents: boolean = false;
@@ -48,12 +51,15 @@ export class DashboardComponent implements OnInit {
     this.router = inject(Router);
 
     this.totalEarnings = 0;
+    this.totalMembers = 0;
     this.totalRegistrations = 0;
 
     this.totalEventEarnings = 0;
+    this.totalEventMembers = 0;
     this.totalEventRegistrations = 0;
     
     this.totalWorkshopEarnings = 0;
+    this.totalWorkshopMembers = 0;
     this.totalWorkshopRegistrations = 0;
   }
 
@@ -74,22 +80,31 @@ export class DashboardComponent implements OnInit {
         this.totalEarnings = this.eventStats.reduce((acc, event) => {
           return acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
-        this.totalRegistrations = this.eventStats.reduce((acc, event) => {
+        this.totalMembers = this.eventStats.reduce((acc, event) => {
           return acc + parseInt(event.seatsFilled);
+        }, 0);
+        this.totalRegistrations = this.eventStats.reduce((acc, event) => {
+          return acc + parseInt(event.totalRegistrations ?? 0);
         }, 0);
     
         this.totalEventEarnings = this.eventStats.reduce((acc, event) => {
-          return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRevenue ?? 0);
-        }, 0);
-        this.totalEventRegistrations = this.eventStats.reduce((acc, event) => {
-          return event.isWorkshop === '0' ? acc : acc + parseInt(event.seatsFilled);
-        }, 0);
-    
-        this.totalWorkshopEarnings = this.eventStats.reduce((acc, event) => {
           return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
-        this.totalWorkshopRegistrations = this.eventStats.reduce((acc, event) => {
+        this.totalEventMembers = this.eventStats.reduce((acc, event) => {
           return event.isWorkshop === '1' ? acc : acc + parseInt(event.seatsFilled);
+        }, 0);
+        this.totalEventRegistrations = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalRegistrations ?? 0);
+        }, 0);
+
+        this.totalWorkshopEarnings = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRevenue ?? 0);
+        }, 0);
+        this.totalWorkshopMembers = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '0' ? acc : acc + parseInt(event.seatsFilled);
+        }, 0);
+        this.totalWorkshopRegistrations = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRegistrations ?? 0);
         }, 0);
 
         this.filterEvents();
