@@ -24,7 +24,14 @@ export class DashboardComponent implements OnInit {
   public eventStats: any[];
   public apiService: ApiService;
   public router: Router;
+
   public totalEarnings: number;
+  public totalEventEarnings: number;
+  public totalWorkshopEarnings: number;
+
+  public showZeroRegEvents: boolean = false;
+  public showEventsOnly: boolean = false;
+  public showWorkshopsOnly: boolean = false;
 
   constructor() {
     this.loading = false;
@@ -35,6 +42,8 @@ export class DashboardComponent implements OnInit {
     this.apiService = inject(ApiService);
     this.router = inject(Router);
     this.totalEarnings = 0;
+    this.totalEventEarnings = 0;
+    this.totalWorkshopEarnings = 0;
   }
 
   async ngOnInit() {
@@ -46,8 +55,17 @@ export class DashboardComponent implements OnInit {
 
       if (data) {
         this.eventStats = data.events;
+
         this.totalEarnings = this.eventStats.reduce((acc, event) => {
           return acc + parseInt(event.totalRevenue ?? 0);
+        }, 0);
+    
+        this.totalEventEarnings = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRevenue ?? 0);
+        }, 0);
+    
+        this.totalWorkshopEarnings = this.eventStats.reduce((acc, event) => {
+          return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
 
         this.filterEvents();
@@ -63,8 +81,24 @@ export class DashboardComponent implements OnInit {
 
   filterEvents() {
     this.filteredEvents = this.eventStats;
+
     if (this.sortedColumn) {
       this.filteredEvents = this.sortByColumn(this.filteredEvents, this.sortedColumn, this.sortOrder);
+    }
+    if (this.showZeroRegEvents) {
+      this.filteredEvents = this.filteredEvents.filter((event) => {
+        return event.seatsFilled === 0;
+      });
+    }
+
+    if (this.showEventsOnly) {
+      this.filteredEvents = this.filteredEvents.filter((event) => {
+        return event.isWorkshop === '0';
+      });
+    } else if (this.showWorkshopsOnly) {
+      this.filteredEvents = this.filteredEvents.filter((event) => {
+        return event.isWorkshop === '1';
+      });
     }
   }
 
@@ -84,6 +118,27 @@ export class DashboardComponent implements OnInit {
       this.sortedColumn = column;
       this.sortOrder = 1;
     }
+    this.filterEvents();
+  }
+
+  toggleZeroRegEvents() {
+    this.showZeroRegEvents = !this.showZeroRegEvents;
+    this.filterEvents();
+  }
+
+  toggleEventsOnly() {
+    if (this.showWorkshopsOnly) {
+      this.showWorkshopsOnly = false;
+    }
+    this.showEventsOnly = !this.showEventsOnly;
+    this.filterEvents();
+  }
+
+  toggleWorkshopsOnly() {
+    if (this.showEventsOnly) {
+      this.showEventsOnly = false;
+    }
+    this.showWorkshopsOnly = !this.showWorkshopsOnly;
     this.filterEvents();
   }
 }

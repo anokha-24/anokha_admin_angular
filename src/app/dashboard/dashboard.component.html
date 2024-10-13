@@ -1,11 +1,55 @@
 <app-loading *ngIf="loading"></app-loading>
 
 <div *ngIf="!loading" class="dashboard">
-    <!-- Display totalEarnings -->
-    <div class="total-earnings">
+  <!-- Display totalEarnings -->
+  <div class="total-earnings">
+    <div class="inner-card">
       <h6>Total Earnings</h6>
       <h1>₹ {{ totalEarnings }} \-</h1>
     </div>
+    <div class="group">
+      <div class="inner-card">
+        <h6>Events</h6>
+        <h1>₹ {{ totalEventEarnings }} \-</h1>
+      </div>
+      <div class="inner-card">
+        <h6>Workshops</h6>
+        <h1>₹ {{ totalWorkshopEarnings }} \-</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons to display
+  - Events with 0 registrations.
+  -->
+
+  <div class="event-buttons">
+    <button
+      class="btn"
+      [ngClass]="{ active: showZeroRegEvents }"
+      (click)="toggleZeroRegEvents()"
+    >
+      With 0 registrations.
+    </button>
+
+    <!-- Two buttons. Events only, Workshops only -->
+    <button
+      class="btn"
+      [ngClass]="{ active: showEventsOnly }"
+      (click)="toggleEventsOnly()"
+    >
+      Events Only
+    </button>
+
+    <button
+      class="btn"
+      [ngClass]="{ active: showWorkshopsOnly }"
+      (click)="toggleWorkshopsOnly()"
+    >
+      Workshops Only
+    </button>
+  </div>
+
   <table class="event-table">
     <thead>
       <tr>
@@ -31,8 +75,8 @@
         <th>Event Name</th>
         <th>DepartmentName</th>
         <th (click)="sortBy('seatsFilled')">
-            Seats Filled
-            <svg
+          Seats Filled
+          <svg
             class="sort-icon"
             [ngClass]="{
               'sort-up': sortedColumn === 'seatsFilled' && sortOrder === 1,
@@ -73,7 +117,15 @@
     <tbody>
       <tr *ngFor="let event of filteredEvents">
         <td>{{ event.eventId }}</td>
-        <td>{{ event.eventName }}</td>
+        <td>
+          <p>{{ event.eventName }}</p>
+          <p *ngIf="event.isWorkshop === '1'">
+            <span class="badge badge-warning">Workshop</span>
+          </p>
+          <p *ngIf="event.isWorkshop === '0'">
+            <span class="badge badge-primary">Event</span>
+          </p>
+        </td>
         <td>
           {{ event.eventDepartmentName }} (
           {{ event.eventDepartmentAbbreviation }} )
