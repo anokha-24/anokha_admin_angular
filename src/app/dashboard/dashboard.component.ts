@@ -81,7 +81,7 @@ export class DashboardComponent implements OnInit {
           return acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
         this.totalMembers = this.eventStats.reduce((acc, event) => {
-          return acc + parseInt(event.seatsFilled);
+          return acc + parseInt(event.totalMembers ?? 0);
         }, 0);
         this.totalRegistrations = this.eventStats.reduce((acc, event) => {
           return acc + parseInt(event.totalRegistrations ?? 0);
@@ -91,7 +91,7 @@ export class DashboardComponent implements OnInit {
           return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
         this.totalEventMembers = this.eventStats.reduce((acc, event) => {
-          return event.isWorkshop === '1' ? acc : acc + parseInt(event.seatsFilled);
+          return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalMembers ?? 0);
         }, 0);
         this.totalEventRegistrations = this.eventStats.reduce((acc, event) => {
           return event.isWorkshop === '1' ? acc : acc + parseInt(event.totalRegistrations ?? 0);
@@ -101,7 +101,7 @@ export class DashboardComponent implements OnInit {
           return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRevenue ?? 0);
         }, 0);
         this.totalWorkshopMembers = this.eventStats.reduce((acc, event) => {
-          return event.isWorkshop === '0' ? acc : acc + parseInt(event.seatsFilled);
+          return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalMembers ?? 0);
         }, 0);
         this.totalWorkshopRegistrations = this.eventStats.reduce((acc, event) => {
           return event.isWorkshop === '0' ? acc : acc + parseInt(event.totalRegistrations ?? 0);
